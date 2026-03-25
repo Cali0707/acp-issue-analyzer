@@ -1,0 +1,89 @@
+[general]
+data_dir = "~/.local/share/acp-issue-analyzer"
+poll_interval = "5m"
+
+[defaults]
+agent = "claude"
+
+[[repos]]
+owner = "myorg"
+name = "myproject"
+path = "/Users/me/repos/myproject"
+default_agent = "claude"
+labels = ["bug", "enhancement"]
+
+# [[repos]]
+# owner = "myorg"
+# name = "other-project"
+# path = "/Users/me/repos/other-project"
+
+[agents.claude]
+cmd = "claude"
+args = ["--acp"]
+resume_cmd = "claude"
+resume_args = ["--resume", "{session_id}"]
+
+# [agents.gemini]
+# cmd = "gemini"
+# args = ["--acp"]
+# resume_cmd = "gemini"
+# resume_args = ["--resume", "{session_id}"]
+
+[safety]
+max_file_write_bytes = 1048576
+
+  [[safety.allowed_commands]]
+  cmd = "go"
+  allow_all = true
+
+  [[safety.allowed_commands]]
+  cmd = "grep"
+  allow_all = true
+
+  [[safety.allowed_commands]]
+  cmd = "find"
+  allow_all = true
+
+  [[safety.allowed_commands]]
+  cmd = "cat"
+  allow_all = true
+
+  [[safety.allowed_commands]]
+  cmd = "head"
+  allow_all = true
+
+  [[safety.allowed_commands]]
+  cmd = "tail"
+  allow_all = true
+
+  [[safety.allowed_commands]]
+  cmd = "ls"
+  allow_all = true
+
+  [[safety.allowed_commands]]
+  cmd = "wc"
+  allow_all = true
+
+  [[safety.allowed_commands]]
+  cmd = "tree"
+  allow_all = true
+
+  [[safety.allowed_commands]]
+  cmd = "git"
+  args_prefix = ["diff"]
+
+  [[safety.allowed_commands]]
+  cmd = "git"
+  args_prefix = ["log"]
+
+  [[safety.allowed_commands]]
+  cmd = "git"
+  args_prefix = ["show"]
+
+  [[safety.allowed_commands]]
+  cmd = "git"
+  args_prefix = ["status"]
+
+  [[safety.allowed_commands]]
+  cmd = "make"
+  allow_all = true
