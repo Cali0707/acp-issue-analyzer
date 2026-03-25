@@ -26,6 +26,21 @@ Or directly:
 go build -o bin/acp-issue-analyzer ./cmd/acp-issue-analyzer
 ```
 
+## Prerequisites
+
+This tool assumes that the repositories you configure are set up as git worktrees with a bare checkout. Agents create isolated worktrees to safely explore code, so this layout is required.
+
+To set up a repo this way:
+
+```bash
+mkdir my-repo && cd my-repo
+git clone --bare <remote-url> .git
+git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+git fetch origin
+DEFAULT_BRANCH=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@')
+git worktree add "$DEFAULT_BRANCH" "$DEFAULT_BRANCH"
+```
+
 ## Configuration
 
 Copy `config.example.toml` to `~/.config/acp-issue-analyzer/config.toml` and edit it to configure:
