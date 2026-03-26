@@ -9,6 +9,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	acp "github.com/coder/acp-go-sdk"
+	"github.com/cmurray/acp-issue-analyzer/internal/store"
 )
 
 // Styles for agent output segments.
@@ -222,6 +223,88 @@ func (m agentViewModel) View() string {
 	} else {
 		b.WriteString(helpStyle.Render("esc back • up/down scroll"))
 	}
+	return b.String()
+}
+
+// renderEntries formats stored output entries with the same styles as the live view.
+func renderEntries(entries []store.OutputEntry) string {
+	var b strings.Builder
+	inThought := false
+	inMessage := false
+
+	endBlocks := func() {
+		if inThought {
+			b.WriteString("\n")
+			inThought = false
+		}
+		if inMessage {
+			b.WriteString("\n")
+			inMessage = false
+		}
+	}
+
+	for _, e := range entries {
+		switch e.Type {
+		case "thought":
+			if e.Text == "" {
+				continue
+			}
+			if inMessage {
+				b.WriteString("\n")
+				inMessage = false
+			}
+			if !inThought {
+				b.WriteString(thoughtStyle.Render("  thinking: "))
+				inThought = true
+			}
+			b.WriteString(thoughtStyle.Render(e.Text))
+
+		case "message":
+			if e.Text == "" {
+				continue
+			}
+			if inThought {
+				b.WriteString("\n\n")
+				inThought = false
+			}
+			inMessage = true
+			b.WriteString(messageStyle.Render(e.Text))
+
+		case "tool_call":
+			endBlocks()
+			icon := toolIcon(acp.ToolKind(e.Kind))
+			status := toolStatusStyle.Render(e.Status)
+			b.WriteString(fmt.Sprintf("\n  %s %s  %s\n", icon, toolTitleStyle.Render(e.Title), status))
+
+		case "tool_update":
+			endBlocks()
+			icon := "  "
+			if e.Status == "completed" {
+				icon = "  +"
+			} else if e.Status == "failed" {
+				icon = "  !"
+			}
+			b.WriteString(fmt.Sprintf("%s %s  %s\n", icon, toolTitleStyle.Render(e.Title), toolStatusStyle.Render(e.Status)))
+
+		case "plan":
+			endBlocks()
+			b.WriteString("\n  Plan:\n")
+			for _, pe := range e.Entries {
+				marker := "  "
+				switch pe.Status {
+				case "completed":
+					marker = "  [x]"
+				case "in_progress":
+					marker = "  [>]"
+				default:
+					marker = "  [ ]"
+				}
+				b.WriteString(fmt.Sprintf("%s %s\n", marker, pe.Content))
+			}
+			b.WriteString("\n")
+		}
+	}
+	endBlocks()
 	return b.String()
 }
 

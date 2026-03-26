@@ -39,10 +39,10 @@ type AgentStartedMsg struct {
 	SessionID string
 }
 
-// SessionOutputLoaded carries the full output text for a completed session.
+// SessionOutputLoaded carries the parsed output entries for a completed session.
 type SessionOutputLoaded struct {
 	SessionID string
-	Output    string
+	Entries   []store.OutputEntry
 	Err       error
 }
 

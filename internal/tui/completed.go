@@ -106,7 +106,7 @@ func (m completedListModel) View() string {
 type completedDetailModel struct {
 	viewport viewport.Model
 	session  *store.PersistedSession
-	output   string
+	entries  []store.OutputEntry
 	ready    bool
 	width    int
 	height   int
@@ -118,12 +118,12 @@ func newCompletedDetailModel() completedDetailModel {
 
 func (m *completedDetailModel) setSession(s *store.PersistedSession) {
 	m.session = s
-	m.output = ""
+	m.entries = nil
 	m.updateContent()
 }
 
-func (m *completedDetailModel) setOutput(output string) {
-	m.output = output
+func (m *completedDetailModel) setEntries(entries []store.OutputEntry) {
+	m.entries = entries
 	m.updateContent()
 }
 
@@ -152,9 +152,9 @@ func (m *completedDetailModel) updateContent() {
 		b.WriteString(fmt.Sprintf("  cd %s && %s\n", s.WorktreePath, s.ResumeCmd))
 	}
 
-	if m.output != "" {
+	if len(m.entries) > 0 {
 		b.WriteString("\n── Agent Output ─────────────────────────────────────\n\n")
-		b.WriteString(m.output)
+		b.WriteString(agentOutputStyle.Render(renderEntries(m.entries)))
 	}
 
 	m.viewport.SetContent(b.String())

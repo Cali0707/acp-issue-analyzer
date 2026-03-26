@@ -160,9 +160,8 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case AgentUpdateMsg:
 		if aa, ok := m.activeAgents[msg.SessionID]; ok {
 			aa.view.appendUpdate(msg.Update)
-			text := extractText(msg.Update)
-			if text != "" {
-				m.store.AppendOutput(msg.SessionID, text)
+			if entry := makeOutputEntry(msg.Update); entry != nil {
+				m.store.AppendEntry(msg.SessionID, *entry)
 			}
 			// Re-invoke listener to keep streaming
 			cmds = append(cmds, m.listenForUpdates(msg.SessionID, aa.tracker))
@@ -195,7 +194,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		if msg.Err != nil {
 			m.errMsg = msg.Err.Error()
 		} else if m.completedDetail.session != nil && m.completedDetail.session.ID == msg.SessionID {
-			m.completedDetail.setOutput(msg.Output)
+			m.completedDetail.setEntries(msg.Entries)
 		}
 
 	case completedSessionsLoaded:
@@ -706,8 +705,8 @@ func (m Model) loadCompletedSessions() tea.Cmd {
 
 func (m Model) loadSessionOutput(sessionID string) tea.Cmd {
 	return func() tea.Msg {
-		output, err := m.store.LoadOutput(sessionID)
-		return SessionOutputLoaded{SessionID: sessionID, Output: output, Err: err}
+		entries, err := m.store.LoadEntries(sessionID)
+		return SessionOutputLoaded{SessionID: sessionID, Entries: entries, Err: err}
 	}
 }
 
@@ -876,14 +875,19 @@ func (v *agentSelectView) String() string {
 	return b
 }
 
-func extractText(u acp.SessionUpdate) string {
+func makeOutputEntry(u acp.SessionUpdate) *store.OutputEntry {
 	switch {
 	case u.AgentMessageChunk != nil && u.AgentMessageChunk.Content.Text != nil:
-		return u.AgentMessageChunk.Content.Text.Text
+		return &store.OutputEntry{Type: "message", Text: u.AgentMessageChunk.Content.Text.Text}
 	case u.AgentThoughtChunk != nil && u.AgentThoughtChunk.Content.Text != nil:
-		return u.AgentThoughtChunk.Content.Text.Text
+		return &store.OutputEntry{Type: "thought", Text: u.AgentThoughtChunk.Content.Text.Text}
 	case u.ToolCall != nil:
-		return fmt.Sprintf("\n[%s] %s (%s)\n", u.ToolCall.Kind, u.ToolCall.Title, u.ToolCall.Status)
+		return &store.OutputEntry{
+			Type:   "tool_call",
+			Kind:   string(u.ToolCall.Kind),
+			Title:  u.ToolCall.Title,
+			Status: string(u.ToolCall.Status),
+		}
 	case u.ToolCallUpdate != nil:
 		status := ""
 		if u.ToolCallUpdate.Status != nil {
@@ -894,8 +898,14 @@ func extractText(u acp.SessionUpdate) string {
 			title = *u.ToolCallUpdate.Title
 		}
 		if status != "" {
-			return fmt.Sprintf("[%s] %s\n", status, title)
+			return &store.OutputEntry{Type: "tool_update", Title: title, Status: status}
 		}
+	case u.Plan != nil:
+		entries := make([]store.PlanEntry, len(u.Plan.Entries))
+		for i, e := range u.Plan.Entries {
+			entries[i] = store.PlanEntry{Status: string(e.Status), Content: e.Content}
+		}
+		return &store.OutputEntry{Type: "plan", Entries: entries}
 	}
-	return ""
+	return nil
 }

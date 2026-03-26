@@ -128,7 +128,7 @@ func TestDelete(t *testing.T) {
 	s := testStore(t)
 	sess := testSession("del-1")
 	s.Save(sess)
-	s.AppendOutput("del-1", "some output")
+	s.AppendEntry("del-1", OutputEntry{Type: "message", Text: "some output"})
 
 	err := s.Delete("del-1")
 	if err != nil {
@@ -154,51 +154,61 @@ func TestDelete_NonexistentIsError(t *testing.T) {
 	}
 }
 
-func TestLoadOutput(t *testing.T) {
+func TestLoadEntries(t *testing.T) {
 	s := testStore(t)
 
-	// No file yet — should return empty string, no error
-	out, err := s.LoadOutput("no-such-session")
+	// No file yet — should return nil, no error
+	entries, err := s.LoadEntries("no-such-session")
 	if err != nil {
-		t.Fatalf("LoadOutput() error for missing file: %v", err)
+		t.Fatalf("LoadEntries() error for missing file: %v", err)
 	}
-	if out != "" {
-		t.Errorf("LoadOutput() = %q, want empty string", out)
+	if entries != nil {
+		t.Errorf("LoadEntries() = %v, want nil", entries)
 	}
 
-	// Write some output then load it back
-	s.AppendOutput("load-1", "hello\n")
-	s.AppendOutput("load-1", "world\n")
+	// Write some entries then load them back
+	s.AppendEntry("load-1", OutputEntry{Type: "thought", Text: "analyzing"})
+	s.AppendEntry("load-1", OutputEntry{Type: "message", Text: "hello world"})
 
-	out, err = s.LoadOutput("load-1")
+	entries, err = s.LoadEntries("load-1")
 	if err != nil {
-		t.Fatalf("LoadOutput() error: %v", err)
+		t.Fatalf("LoadEntries() error: %v", err)
 	}
-	want := "hello\nworld\n"
-	if out != want {
-		t.Errorf("LoadOutput() = %q, want %q", out, want)
+	if len(entries) != 2 {
+		t.Fatalf("LoadEntries() returned %d entries, want 2", len(entries))
+	}
+	if entries[0].Type != "thought" || entries[0].Text != "analyzing" {
+		t.Errorf("entries[0] = %+v, want thought/analyzing", entries[0])
+	}
+	if entries[1].Type != "message" || entries[1].Text != "hello world" {
+		t.Errorf("entries[1] = %+v, want message/hello world", entries[1])
 	}
 }
 
-func TestAppendOutput(t *testing.T) {
+func TestAppendEntry(t *testing.T) {
 	s := testStore(t)
 
-	err := s.AppendOutput("out-1", "first line\n")
+	err := s.AppendEntry("out-1", OutputEntry{Type: "tool_call", Kind: "read", Title: "File Reader", Status: "running"})
 	if err != nil {
-		t.Fatalf("AppendOutput() error: %v", err)
+		t.Fatalf("AppendEntry() error: %v", err)
 	}
-	err = s.AppendOutput("out-1", "second line\n")
+	err = s.AppendEntry("out-1", OutputEntry{Type: "tool_update", Title: "File Reader", Status: "completed"})
 	if err != nil {
-		t.Fatalf("second AppendOutput() error: %v", err)
+		t.Fatalf("second AppendEntry() error: %v", err)
 	}
 
-	data, err := os.ReadFile(s.OutputPath("out-1"))
+	entries, err := s.LoadEntries("out-1")
 	if err != nil {
-		t.Fatalf("reading output file: %v", err)
+		t.Fatalf("LoadEntries() error: %v", err)
 	}
-	want := "first line\nsecond line\n"
-	if string(data) != want {
-		t.Errorf("output = %q, want %q", string(data), want)
+	if len(entries) != 2 {
+		t.Fatalf("got %d entries, want 2", len(entries))
+	}
+	if entries[0].Kind != "read" {
+		t.Errorf("entries[0].Kind = %q, want read", entries[0].Kind)
+	}
+	if entries[1].Status != "completed" {
+		t.Errorf("entries[1].Status = %q, want completed", entries[1].Status)
 	}
 }
 
