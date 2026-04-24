@@ -1,5 +1,5 @@
 [general]
-data_dir = "~/.local/share/acp-issue-analyzer"
+data_dir = "~/.local/share/baton"
 poll_interval = "5m"
 
 [defaults]

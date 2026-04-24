@@ -8,8 +8,8 @@ import (
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/cmurray/acp-issue-analyzer/internal/store"
-	"github.com/cmurray/acp-issue-analyzer/internal/workflow"
+	"github.com/Cali0707/baton/internal/store"
+	"github.com/Cali0707/baton/internal/workflow"
 )
 
 // completedListModel shows the history of completed agent sessions.

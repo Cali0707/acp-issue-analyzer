@@ -1,4 +1,4 @@
-# acp-issue-analyzer
+# baton
 
 > **WARNING: This project is experimental and has been vibe-coded without thorough review. Use at your own risk. Expect rough edges, bugs, and breaking changes.**
 
@@ -23,7 +23,7 @@ make build
 Or directly:
 
 ```
-go build -o bin/acp-issue-analyzer ./cmd/acp-issue-analyzer
+go build -o bin/baton ./cmd/baton
 ```
 
 ## Prerequisites
@@ -43,7 +43,7 @@ git worktree add "$DEFAULT_BRANCH" "$DEFAULT_BRANCH"
 
 ## Configuration
 
-Copy `config.example.toml` to `~/.config/acp-issue-analyzer/config.toml` and edit it to configure:
+Copy `config.example.toml` to `~/.config/baton/config.toml` and edit it to configure:
 
 - GitHub repositories to monitor
 - AI agents to use (e.g. Claude CLI with `--acp`)
@@ -52,9 +52,9 @@ Copy `config.example.toml` to `~/.config/acp-issue-analyzer/config.toml` and edi
 ## Usage
 
 ```
-./bin/acp-issue-analyzer [path/to/config.toml]
+./bin/baton [path/to/config.toml]
 ```
 
-If no config path is given, it defaults to `~/.config/acp-issue-analyzer/config.toml`.
+If no config path is given, it defaults to `~/.config/baton/config.toml`.
 
-Session data and logs are stored in `~/.local/share/acp-issue-analyzer/`.
+Session data and logs are stored in `~/.local/share/baton/`.

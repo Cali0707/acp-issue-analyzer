@@ -2,8 +2,8 @@ package tui
 
 import (
 	acp "github.com/coder/acp-go-sdk"
-	"github.com/cmurray/acp-issue-analyzer/internal/github"
-	"github.com/cmurray/acp-issue-analyzer/internal/store"
+	"github.com/Cali0707/baton/internal/github"
+	"github.com/Cali0707/baton/internal/store"
 )
 
 // Messages for Bubble Tea

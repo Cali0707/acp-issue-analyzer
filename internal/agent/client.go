@@ -6,7 +6,7 @@ import (
 	"log/slog"
 
 	acp "github.com/coder/acp-go-sdk"
-	"github.com/cmurray/acp-issue-analyzer/internal/config"
+	"github.com/Cali0707/baton/internal/config"
 )
 
 // Client implements acp.Client, providing filesystem, terminal, and permission

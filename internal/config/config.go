@@ -152,11 +152,11 @@ func (c *Config) SessionsDir() string {
 
 func DefaultConfigDir() string {
 	if xdg := os.Getenv("XDG_CONFIG_HOME"); xdg != "" {
-		return filepath.Join(xdg, "acp-issue-analyzer")
+		return filepath.Join(xdg, "baton")
 	}
 	home, _ := os.UserHomeDir()
 	if home != "" {
-		return filepath.Join(home, ".config", "acp-issue-analyzer")
+		return filepath.Join(home, ".config", "baton")
 	}
 	return ""
 }

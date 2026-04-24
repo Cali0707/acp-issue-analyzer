@@ -8,7 +8,7 @@ import (
 	"os/exec"
 
 	acp "github.com/coder/acp-go-sdk"
-	"github.com/cmurray/acp-issue-analyzer/internal/config"
+	"github.com/Cali0707/baton/internal/config"
 )
 
 // RunResult holds the outcome of an agent run.
@@ -82,7 +82,7 @@ func (r *Runner) Run(ctx context.Context, worktreePath, prompt string, tracker *
 			Terminal: true,
 		},
 		ClientInfo: &acp.Implementation{
-			Name:    "acp-issue-analyzer",
+			Name:    "baton",
 			Version: "0.1.0",
 		},
 	})

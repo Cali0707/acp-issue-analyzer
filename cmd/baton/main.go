@@ -7,10 +7,10 @@ import (
 	"os"
 
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/cmurray/acp-issue-analyzer/internal/config"
-	ghclient "github.com/cmurray/acp-issue-analyzer/internal/github"
-	"github.com/cmurray/acp-issue-analyzer/internal/store"
-	"github.com/cmurray/acp-issue-analyzer/internal/tui"
+	"github.com/Cali0707/baton/internal/config"
+	ghclient "github.com/Cali0707/baton/internal/github"
+	"github.com/Cali0707/baton/internal/store"
+	"github.com/Cali0707/baton/internal/tui"
 )
 
 func main() {
@@ -40,7 +40,7 @@ func run() error {
 	}
 
 	// Set up logging to file (avoid interfering with TUI)
-	logPath := cfg.General.DataDir + "/acp-issue-analyzer.log"
+	logPath := cfg.General.DataDir + "/baton.log"
 	os.MkdirAll(cfg.General.DataDir, 0o755)
 	logFile, err := os.OpenFile(logPath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0o644)
 	if err != nil {

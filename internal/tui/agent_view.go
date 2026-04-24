@@ -9,7 +9,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	acp "github.com/coder/acp-go-sdk"
-	"github.com/cmurray/acp-issue-analyzer/internal/store"
+	"github.com/Cali0707/baton/internal/store"
 )
 
 // Styles for agent output segments.

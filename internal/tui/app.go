@@ -11,12 +11,12 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	acp "github.com/coder/acp-go-sdk"
-	"github.com/cmurray/acp-issue-analyzer/internal/agent"
-	"github.com/cmurray/acp-issue-analyzer/internal/config"
-	ghclient "github.com/cmurray/acp-issue-analyzer/internal/github"
-	"github.com/cmurray/acp-issue-analyzer/internal/store"
-	"github.com/cmurray/acp-issue-analyzer/internal/workflow"
-	"github.com/cmurray/acp-issue-analyzer/internal/worktree"
+	"github.com/Cali0707/baton/internal/agent"
+	"github.com/Cali0707/baton/internal/config"
+	ghclient "github.com/Cali0707/baton/internal/github"
+	"github.com/Cali0707/baton/internal/store"
+	"github.com/Cali0707/baton/internal/workflow"
+	"github.com/Cali0707/baton/internal/worktree"
 	"github.com/google/uuid"
 )
 
