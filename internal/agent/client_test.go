@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	acp "github.com/coder/acp-go-sdk"
-	"github.com/cmurray/acp-issue-analyzer/internal/config"
+	"github.com/Cali0707/baton/internal/config"
 )
 
 func testClient(t *testing.T) (*Client, string) {

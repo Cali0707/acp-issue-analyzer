@@ -8,7 +8,7 @@ import (
 	"github.com/charmbracelet/bubbles/table"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/cmurray/acp-issue-analyzer/internal/github"
+	"github.com/Cali0707/baton/internal/github"
 )
 
 type inboxModel struct {

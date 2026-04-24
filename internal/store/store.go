@@ -6,9 +6,10 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strings"
 	"time"
 
-	"github.com/cmurray/acp-issue-analyzer/internal/workflow"
+	"github.com/Cali0707/baton/internal/workflow"
 )
 
 type SessionStatus string
@@ -114,25 +115,56 @@ func (s *Store) Delete(id string) error {
 	return os.Remove(s.sessionPath(id))
 }
 
-// LoadOutput reads the full output log for a session. Returns empty string if no file exists.
-func (s *Store) LoadOutput(id string) (string, error) {
+// OutputEntry is a structured log entry stored as JSONL in the output file.
+type OutputEntry struct {
+	Type    string      `json:"type"`              // "thought", "message", "tool_call", "tool_update", "plan"
+	Text    string      `json:"text,omitempty"`    // thought/message text
+	Kind    string      `json:"kind,omitempty"`    // tool kind
+	Title   string      `json:"title,omitempty"`   // tool title
+	Status  string      `json:"status,omitempty"`  // tool status
+	Entries []PlanEntry `json:"entries,omitempty"` // plan entries
+}
+
+// PlanEntry represents a single step in a plan.
+type PlanEntry struct {
+	Status  string `json:"status"`
+	Content string `json:"content"`
+}
+
+// LoadEntries reads and parses the JSONL output log for a session.
+func (s *Store) LoadEntries(id string) ([]OutputEntry, error) {
 	data, err := os.ReadFile(s.OutputPath(id))
 	if err != nil {
 		if os.IsNotExist(err) {
-			return "", nil
+			return nil, nil
 		}
-		return "", fmt.Errorf("reading output for session %s: %w", id, err)
+		return nil, fmt.Errorf("reading output for session %s: %w", id, err)
 	}
-	return string(data), nil
+	var entries []OutputEntry
+	for _, line := range strings.Split(strings.TrimSpace(string(data)), "\n") {
+		if line == "" {
+			continue
+		}
+		var entry OutputEntry
+		if err := json.Unmarshal([]byte(line), &entry); err != nil {
+			continue // skip corrupted lines
+		}
+		entries = append(entries, entry)
+	}
+	return entries, nil
 }
 
-// AppendOutput appends text to the session's output log file.
-func (s *Store) AppendOutput(id, text string) error {
+// AppendEntry appends a structured entry as a JSON line to the session's output log.
+func (s *Store) AppendEntry(id string, entry OutputEntry) error {
 	f, err := os.OpenFile(s.OutputPath(id), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0o644)
 	if err != nil {
 		return err
 	}
 	defer f.Close()
-	_, err = f.WriteString(text)
+	data, err := json.Marshal(entry)
+	if err != nil {
+		return err
+	}
+	_, err = fmt.Fprintf(f, "%s\n", data)
 	return err
 }

@@ -1,4 +1,4 @@
-BINARY := acp-issue-analyzer
+BINARY := baton
 BUILD_DIR := bin
 CMD := ./cmd/$(BINARY)
 

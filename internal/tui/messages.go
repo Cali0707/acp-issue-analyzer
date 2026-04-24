@@ -2,8 +2,8 @@ package tui
 
 import (
 	acp "github.com/coder/acp-go-sdk"
-	"github.com/cmurray/acp-issue-analyzer/internal/github"
-	"github.com/cmurray/acp-issue-analyzer/internal/store"
+	"github.com/Cali0707/baton/internal/github"
+	"github.com/Cali0707/baton/internal/store"
 )
 
 // Messages for Bubble Tea
@@ -39,10 +39,10 @@ type AgentStartedMsg struct {
 	SessionID string
 }
 
-// SessionOutputLoaded carries the full output text for a completed session.
+// SessionOutputLoaded carries the parsed output entries for a completed session.
 type SessionOutputLoaded struct {
 	SessionID string
-	Output    string
+	Entries   []store.OutputEntry
 	Err       error
 }
 

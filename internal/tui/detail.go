@@ -7,7 +7,7 @@ import (
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/glamour"
-	"github.com/cmurray/acp-issue-analyzer/internal/github"
+	"github.com/Cali0707/baton/internal/github"
 )
 
 type detailModel struct {

@@ -364,7 +364,7 @@ data_dir = "/tmp"
 
 func TestFindConfigPath_XDGConfig(t *testing.T) {
 	dir := t.TempDir()
-	configDir := filepath.Join(dir, "acp-issue-analyzer")
+	configDir := filepath.Join(dir, "baton")
 	os.MkdirAll(configDir, 0o755)
 	configPath := filepath.Join(configDir, "config.toml")
 	if err := os.WriteFile(configPath, []byte(""), 0o644); err != nil {

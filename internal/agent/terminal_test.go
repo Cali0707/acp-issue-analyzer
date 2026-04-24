@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/cmurray/acp-issue-analyzer/internal/config"
+	"github.com/Cali0707/baton/internal/config"
 )
 
 func defaultAllowlist() []config.AllowedCommand {
