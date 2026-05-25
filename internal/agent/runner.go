@@ -84,7 +84,7 @@ func (r *Runner) Run(ctx context.Context, worktreePath, prompt string, tracker *
 	initResp, err := conn.Initialize(ctx, acp.InitializeRequest{
 		ProtocolVersion: acp.ProtocolVersionNumber,
 		ClientCapabilities: acp.ClientCapabilities{
-			Fs: acp.FileSystemCapability{
+			Fs: acp.FileSystemCapabilities{
 				ReadTextFile:  true,
 				WriteTextFile: true,
 			},

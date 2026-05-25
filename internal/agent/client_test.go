@@ -102,7 +102,7 @@ func TestClient_RequestPermission_AutoApprove(t *testing.T) {
 			{OptionId: "allow-once", Kind: acp.PermissionOptionKindAllowOnce, Name: "Allow Once"},
 			{OptionId: "allow-always", Kind: acp.PermissionOptionKindAllowAlways, Name: "Allow Always"},
 		},
-		ToolCall: acp.RequestPermissionToolCall{Title: &title},
+		ToolCall: acp.ToolCallUpdate{Title: &title},
 	})
 	if err != nil {
 		t.Fatalf("RequestPermission() error: %v", err)
@@ -268,11 +268,11 @@ func TestClient_TerminalLifecycle(t *testing.T) {
 	}
 
 	// Kill
-	_, err = client.KillTerminalCommand(ctx, acp.KillTerminalCommandRequest{
+	_, err = client.KillTerminal(ctx, acp.KillTerminalRequest{
 		TerminalId: resp.TerminalId,
 	})
 	if err != nil {
-		t.Fatalf("KillTerminalCommand() error: %v", err)
+		t.Fatalf("KillTerminal() error: %v", err)
 	}
 
 	// Wait
