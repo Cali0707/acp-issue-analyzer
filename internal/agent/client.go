@@ -124,12 +124,12 @@ func (c *Client) CreateTerminal(ctx context.Context, params acp.CreateTerminalRe
 	return acp.CreateTerminalResponse{TerminalId: id}, nil
 }
 
-func (c *Client) KillTerminalCommand(ctx context.Context, params acp.KillTerminalCommandRequest) (acp.KillTerminalCommandResponse, error) {
-	c.logger.Debug("KillTerminalCommand", "terminalId", params.TerminalId)
+func (c *Client) KillTerminal(ctx context.Context, params acp.KillTerminalRequest) (acp.KillTerminalResponse, error) {
+	c.logger.Debug("KillTerminal", "terminalId", params.TerminalId)
 	if err := c.term.Kill(params.TerminalId); err != nil {
-		return acp.KillTerminalCommandResponse{}, err
+		return acp.KillTerminalResponse{}, err
 	}
-	return acp.KillTerminalCommandResponse{}, nil
+	return acp.KillTerminalResponse{}, nil
 }
 
 func (c *Client) TerminalOutput(ctx context.Context, params acp.TerminalOutputRequest) (acp.TerminalOutputResponse, error) {
